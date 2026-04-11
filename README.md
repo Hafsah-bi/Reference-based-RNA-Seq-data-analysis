@@ -10,7 +10,7 @@ Reference-based RNA-Seq analysis of Drosophila melanogaster Pasilla gene knockdo
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 1. [Data Upload](#step-1-data-upload)
 2. [Quality Control](#step-2-quality-control)
 3. [Mapping with RNA STAR](#step-3-mapping-with-rna-star)
@@ -28,11 +28,11 @@ Reference-based RNA-Seq analysis of Drosophila melanogaster Pasilla gene knockdo
 
 ## STEP 1: Data Upload
 
-### 🎯 What We Do
+### What We Do
 Upload raw FASTQ files for 2 paired-end samples (GSM461177 untreated,
 GSM461180 treated) from Zenodo into a new Galaxy history.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 1. Go to [usegalaxy.org](https://usegalaxy.org) → create a **New History**
    → name it `RNA-Seq-Pasilla`
 2. Click **Upload** (top of left panel) → **Paste/Fetch Data**
@@ -47,23 +47,19 @@ https://zenodo.org/record/6457007/files/GSM461180_2.fastqsanger
 
 4. Set **datatype** → `fastqsanger` → Press **Start**
 
-### ✅ Expected Output
+### Expected Output
 - All 4 FASTQ files appear **green** in the Galaxy history panel
 - File sizes ~1.5 GB each (full dataset) or ~50 MB (subsets)
-
-<!-- INSERT IMAGE: Galaxy history panel showing uploaded green FASTQ files -->
-![Data Upload](images/01_data_upload_history.png)
-> *Figure 1: Galaxy history panel after successful upload of all 4 FASTQ files.*
 
 ---
 
 ## STEP 2: Quality Control
 
-### 🎯 What We Do
+### What We Do
 Run **Falco** (fast FastQC alternative) on all FASTQ files, then aggregate
 results with **MultiQC** to get a single summary report.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: Falco**
 1. Search `Falco` in the tool panel
@@ -82,7 +78,7 @@ results with **MultiQC** to get a single summary report.
 
 3. Click **Execute**
 
-### ✅ What to Look For in Results
+### What to Look For in Results
 
 | QC Metric              | Good Sign                        | Warning Sign                   |
 |------------------------|----------------------------------|--------------------------------|
@@ -104,11 +100,11 @@ results with **MultiQC** to get a single summary report.
 
 ## STEP 3: Mapping with RNA STAR
 
-### 🎯 What We Do
+### What We Do
 Map reads to the **dm6** *Drosophila* reference genome using **RNA STAR**,
 a splice-aware aligner that handles intron-spanning reads in eukaryotes.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: RNA STAR**
 1. Search `RNA STAR` in the tool panel
@@ -130,7 +126,7 @@ a splice-aware aligner that handles intron-spanning reads in eukaryotes.
 
 3. Run for **both samples** (GSM461177 and GSM461180)
 
-### ✅ Expected Outputs per Sample
+### Expected Outputs per Sample
 
 | Output File              | Description                                      |
 |--------------------------|--------------------------------------------------|
@@ -149,7 +145,7 @@ a splice-aware aligner that handles intron-spanning reads in eukaryotes.
 
 ## STEP 4: Inspection of Mapping Results
 
-### 🎯 What We Do
+### What We Do
 Visually inspect the BAM alignments at the *Pasilla* gene locus using
 **IGV**, **Sashimi plots**, and **JBrowse2** — for both PE samples.
 
@@ -222,8 +218,8 @@ The BigWig files from STAR show **strand-specific** expression:
 
 | Track      | Color  | Strand   | Meaning                    |
 |------------|--------|----------|----------------------------|
-| Str1 BigWig| 🔵 Blue | Forward (+) | Reads on sense strand   |
-| Str2 BigWig| 🔴 Red  | Reverse (−) | Reads on antisense strand|
+| Str1 BigWig| Blue | Forward (+) | Reads on sense strand   |
+| Str2 BigWig| Red  | Reverse (−) | Reads on antisense strand|
 
 Load both BigWig files into IGV or JBrowse2 and set colors manually.
 
@@ -235,11 +231,11 @@ Load both BigWig files into IGV or JBrowse2 and set colors manually.
 
 ## STEP 5: Estimation of Strandedness
 
-### 🎯 What We Do
+### What We Do
 Use **Infer Experiment** (RSeQC) to determine the library strandedness
 before counting reads — critical for correct featureCounts settings.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: Infer Experiment**
 1. Search `Infer Experiment` in tool panel
@@ -251,7 +247,7 @@ before counting reads — critical for correct featureCounts settings.
 | Reference gene model | dm6 BED file              |
 | Number of reads | 200,000                        |
 
-### ✅ Interpreting the Output
+### Interpreting the Output
 
 ```
 Fraction of reads explained by "1++,1--,2+-,2-+": 0.03  ← Forward stranded
@@ -272,11 +268,11 @@ Fraction of reads explained by "1+-,1-+,2++,2--": 0.97  ← Reverse stranded ✅
 
 ## STEP 6: Counting Reads per Gene
 
-### 🎯 What We Do
+### What We Do
 Count the number of reads overlapping each annotated gene using
 **featureCounts** for all 7 samples to build a count matrix.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: featureCounts**
 1. Search `featureCounts` in tool panel
@@ -293,7 +289,7 @@ Count the number of reads overlapping each annotated gene using
 | Count reads also overlapping     | No (default)                 |
 | Paired-end distance              | Yes (for PE samples)         |
 
-### ✅ Expected Outputs
+### Expected Outputs
 
 | Output File         | Description                                    |
 |---------------------|------------------------------------------------|
@@ -312,11 +308,11 @@ Count the number of reads overlapping each annotated gene using
 
 ## STEP 7: Differential Gene Expression — DESeq2
 
-### 🎯 What We Do
+### What We Do
 Use **DESeq2** to normalize counts and identify statistically significant
 differentially expressed genes between treated and untreated conditions.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: DESeq2**
 1. Search `DESeq2` in tool panel
@@ -334,7 +330,7 @@ differentially expressed genes between treated and untreated conditions.
 | Output normalized counts     | Yes                                        |
 | Alpha (FDR threshold)        | 0.05                                       |
 
-### ✅ Expected Outputs
+### Expected Outputs
 
 | Output                    | Description                                        |
 |---------------------------|----------------------------------------------------|
@@ -357,11 +353,11 @@ differentially expressed genes between treated and untreated conditions.
 
 ## STEP 8: Annotation of DESeq2 Results
 
-### 🎯 What We Do
+### What We Do
 Add gene names, descriptions, and chromosomal positions to the raw
 DESeq2 output (which only contains Ensembl gene IDs).
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: Annotate DESeq2/DEXSeq output tables**
 1. Search `Annotate DESeq2` in tool panel
@@ -374,7 +370,7 @@ DESeq2 output (which only contains Ensembl gene IDs).
 | Gene ID column         | Column 1 (gene_id)                      |
 | Columns to add         | Gene name, description, chromosome      |
 
-### ✅ Expected Output
+### Expected Output
 
 The annotated table now contains:
 
@@ -392,11 +388,11 @@ The annotated table now contains:
 
 ## STEP 9: Extraction of Differentially Expressed Genes
 
-### 🎯 What We Do
+### What We Do
 Filter the annotated DESeq2 table to extract only **significant DE genes**
 using cutoffs: **padj < 0.05** AND **|log2FC| > 1**.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: Filter data on any column using simple expressions**
 1. Search `Filter` in tool panel
@@ -414,7 +410,7 @@ abs(c3) > 1
 ```
 *(column 3 = log2FoldChange)*
 
-### ✅ DE Gene Summary
+### DE Gene Summary
 
 | Category         | Count  | Criteria                        |
 |------------------|--------|---------------------------------|
@@ -435,7 +431,7 @@ abs(c3) > 1
 
 ## STEP 10: Visualization of DE Gene Expression
 
-### 🎯 What We Do
+### What We Do
 Generate a **PCA plot** and **sample-to-sample heatmap** from normalized
 counts to visualize variability and confirm biological groupings.
 
@@ -493,11 +489,11 @@ Also **auto-generated by DESeq2** using Euclidean distances on VST counts.
 
 ## STEP 11: Gene Ontology (GO) Analysis
 
-### 🎯 What We Do
+### What We Do
 Identify which **biological processes, molecular functions, and cellular
 components** are enriched among the DE genes using **goseq**.
 
-### 🔧 How to Do It in Galaxy
+### How to Do It in Galaxy
 
 **Tool: goseq**
 1. Search `goseq` in tool panel
@@ -512,7 +508,7 @@ components** are enriched among the DE genes using **goseq**.
 | Method to correct for bias   | Wallenius (default)                    |
 | p-value cutoff               | 0.05                                   |
 
-### ✅ Expected Output — Top GO Terms
+### Expected Output — Top GO Terms
 
 | GO Term ID   | Description                        | p-adj   | DE Genes |
 |--------------|------------------------------------|---------|----------|
@@ -550,7 +546,7 @@ which biological pathways are most impacted by Pasilla depletion.
 | Database               | KEGG                          |
 | p-value cutoff         | 0.05                          |
 
-### ✅ Expected Output — Top KEGG Pathways
+### Expected Output — Top KEGG Pathways
 
 | KEGG ID   | Pathway Name                     | p-adj   | DE Genes |
 |-----------|----------------------------------|---------|----------|
@@ -612,7 +608,7 @@ RNA-Seq-Galaxy-Report/
 
 ---
 
-## 🔁 Complete Pipeline Overview
+## Complete Pipeline Overview
 
 ```
 FASTQ files (Zenodo)
@@ -642,7 +638,7 @@ FASTQ files (Zenodo)
 
 ---
 
-## 📚 References
+## References
 
 1. Galaxy Training Network (2026) — Reference-based RNA-Seq tutorial:
    https://training.galaxyproject.org/training-material/topics/transcriptomics/tutorials/ref-based/tutorial.html
