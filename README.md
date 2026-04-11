@@ -4,9 +4,9 @@ Reference-based RNA-Seq analysis of Drosophila melanogaster Pasilla gene knockdo
 # Reference-based RNA-Seq Data Analysis — Galaxy Pipeline Report
 
 > **Organism:** *Drosophila melanogaster*  
-> **Study:** Pasilla gene knockdown (Brooks et al. 2011)  
+> **Study:** Pasilla gene knockdown   
 > **Samples:** 4 untreated + 3 treated (PS-RNAi depleted)  
-> **Platform:** [Galaxy](https://usegalaxy.eu) | **Reference:** dm6  
+> **Platform:** [Galaxy](https://usegalaxy.org) | **Reference:** dm6  
 
 ---
 
@@ -33,7 +33,7 @@ Upload raw FASTQ files for 2 paired-end samples (GSM461177 untreated,
 GSM461180 treated) from Zenodo into a new Galaxy history.
 
 ### 🔧 How to Do It in Galaxy
-1. Go to [usegalaxy.eu](https://usegalaxy.eu) → create a **New History**
+1. Go to [usegalaxy.org](https://usegalaxy.org) → create a **New History**
    → name it `RNA-Seq-Pasilla`
 2. Click **Upload** (top of left panel) → **Paste/Fetch Data**
 3. Paste the following URLs one per line:
@@ -46,17 +46,6 @@ https://zenodo.org/record/6457007/files/GSM461180_2.fastqsanger
 ```
 
 4. Set **datatype** → `fastqsanger` → Press **Start**
-
-### 📊 Sample Table
-
-| Sample ID  | Condition       | Library Type | Files                          |
-|------------|-----------------|--------------|--------------------------------|
-| GSM461177  | Untreated       | Paired-End   | GSM461177_1 + GSM461177_2      |
-| GSM461178  | Untreated       | Single-End   | GSM461178                      |
-| GSM461179  | Treated (RNAi)  | Single-End   | GSM461179                      |
-| GSM461180  | Treated (RNAi)  | Paired-End   | GSM461180_1 + GSM461180_2      |
-| GSM461181  | Treated (RNAi)  | Single-End   | GSM461181                      |
-| GSM461182  | Untreated       | Single-End   | GSM461182                      |
 
 ### ✅ Expected Output
 - All 4 FASTQ files appear **green** in the Galaxy history panel
