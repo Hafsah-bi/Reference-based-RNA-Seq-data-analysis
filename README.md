@@ -532,32 +532,53 @@ gene model, then **Infer Experiment** `v5.0.3+galaxy0` was applied.
 
 ## 8. Read Counting — featureCounts
 
-Raw read counts per annotated gene were quantified across all seven samples
-using **featureCounts** with the dm6 Ensembl GTF annotation. The resulting
-count matrix served as direct input for DESeq2.
+During mapping, RNA STAR generated per-gene read counts using the
+**GeneCounts** option. The raw output contains 4 header lines and
+3 count columns (unstranded, stranded forward, stranded reverse).
+This section reformats that output into a clean 2-column table
+compatible with featureCounts and downstream tools.
 
-| Parameter                  | Value                        |
-|----------------------------|------------------------------|
-| Alignment files            | All 7 STAR BAM files         |
-| Gene annotation            | dm6 Ensembl GTF              |
-| Feature type               | exon                         |
-| Gene identifier attribute  | gene_id                      |
-| Strand specificity         | Reverse-stranded (2)         |
-| Multi-mapping reads        | Excluded                     |
-| Paired-end mode            | Enabled                      |
+---
 
-| Sample     | Assigned | Ambiguous | No Feature |
-|------------|----------|-----------|------------|
-| GSM461177  | ~78%     | ~2%       | ~20%       |
-| GSM461180  | ~76%     | ~2%       | ~22%       |
+### 8.1 Reformat STAR Output
 
-<!-- INSERT IMAGE: featureCounts MultiQC summary -->
-![featureCounts Summary](images/06a_featurecounts_summary.png)
-> *Figure 13: featureCounts assignment summary — ~75–80% of reads assigned per sample.*
+**Step 1 — Remove the first 4 header lines:**
 
-<!-- INSERT IMAGE: Raw count matrix preview -->
-![Count Matrix](images/06b_count_matrix_preview.png)
-> *Figure 14: Raw count matrix — rows represent genes, columns represent samples.*
+| Parameter       | Value                                              |
+|-----------------|----------------------------------------------------|
+| Remove first    | 4 lines                                            |
+| Text file       | RNA STAR on collection N: reads per gene           |
+
+**Step 2 — Extract gene ID and count columns:**
+
+| Parameter       | Value                                              |
+|-----------------|----------------------------------------------------|
+| Cut columns     | `c1,c2`                                            |
+| Delimited by    | Tab                                                |
+| From            | Output of Remove beginning tool (Dataset collection)|
+
+> **Column selection note:** `c1` = gene ID, `c2` = unstranded counts.
+> For a reverse-stranded library (as confirmed in Section 7), use `c4`
+> instead of `c2`.
+
+- Rename the resulting collection → **`FeatureCount-like files`**
+
+---
+
+### 8.2 Gene Length Calculation
+
+Gene lengths are required for normalization methods such as RPKM/FPKM/TPM.
+**Gene length and GC content** `v0.1.2` was run to extract gene lengths
+from the GTF annotation.
+
+| Parameter              | Value                                              |
+|------------------------|----------------------------------------------------|
+| GTF source             | Use a GTF from history                             |
+| GTF file               | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz`|
+| Analysis to perform    | Gene lengths only                                  |
+
+> The output provides per-gene effective lengths used in the
+> normalization step during differential expression analysis.
 
 ---
 
