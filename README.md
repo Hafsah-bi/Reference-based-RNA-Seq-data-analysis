@@ -413,31 +413,120 @@ for both samples.
 
 ## 7. Estimation of Library Strandedness
 
-**Infer Experiment** (RSeQC) was applied to the STAR BAM output to
-empirically determine library strandedness prior to read counting.
-The result confirmed a **reverse-stranded** library, requiring
-`strandedness = 2` in featureCounts.
+Before quantification, the strandness of the RNA-Seq library was estimated
+using four complementary approaches: visual inspection in **IGV** and
+**JBrowse2**, strand-specific coverage plots via **pyGenomeTracks**, STAR
+gene counts via **MultiQC**, and computational inference using **Infer Experiment**.
 
-| Parameter            | Value                             |
-|----------------------|-----------------------------------|
-| Input BAM            | STAR BAM (GSM461177 or GSM461180) |
-| Reference gene model | dm6 BED12 file                    |
-| Reads sampled        | 200,000                           |
+---
 
-```
-Fraction of reads explained by "1++,1--,2+-,2-+":  0.03  ← Forward
-Fraction of reads explained by "1+-,1-+,2++,2--":  0.97  ← Reverse ✅
-```
+### 7.1 Visual Inspection — IGV (chr3R:9,445,000–9,448,000)
 
-| Fraction Profile  | Library Type        | featureCounts Setting |
-|-------------------|---------------------|-----------------------|
-| ~50% / ~50%       | Unstranded          | 0                     |
-| ~97% forward      | Forward-stranded    | 1                     |
-| ~97% reverse      | **Reverse-stranded**| **2** ✅              |
+- Open `GSM461177_untreat_paired` mapped.bam in IGV.
+- Zoom to `chr3R:9,445,000–9,448,000`.
+- Right-click track → **Color Alignments by → First-of-pair strand**.
+- Right-click → **Squished** for compact view.
 
-<!-- INSERT IMAGE: Infer Experiment output -->
-![Infer Experiment](images/05_infer_experiment_output.png)
-> *Figure 12: Infer Experiment output — reverse-stranded library confirmed (~97% Strand 2).*
+![IGV Strandness](images/05a_igv_strand.png)
+> *Figure 11: IGV view at chr3R:9,445,000–9,448,000 colored by first-of-pair
+> strand — coverage, junction, and read tracks shown for GSM461177.*
+
+**Key observations:**
+- Reads are colored by first-of-pair strand (red = reverse, blue = forward),
+  revealing a clear strand bias across the locus.
+- Junction track confirms active splicing at the *ps* gene locus.
+- The dominant strand color indicates a **stranded library** orientation.
+
+---
+
+### 7.2 Visual Inspection — JBrowse2 (chr3R:9,445,000–9,448,000)
+
+- Zoom to `chr3R:9445000..9448000`.
+- Click **⋮** next to each BAM track → **Pileup settings → Color by →
+  First-of-pair strand**.
+- Click **⋮** → **Pileup settings → Set feature height → Compact**.
+- Repeat for both BAM files.
+
+![JBrowse2 Strandness](images/05b_jbrowse2_strand.png)
+> *Figure 12: JBrowse2 view at chr3R:9,415,001–9,462,900 — both
+> GSM461177_untreat_paired and GSM461180_treat_paired colored by
+> first-of-pair strand alongside the GTF annotation track.*
+
+**Key observations:**
+- Both samples display a consistent strand color pattern across the region,
+  confirming **strand-specific sequencing**.
+- Read orientation is uniform within each gene, consistent with a
+  **reverse-stranded** library protocol.
+- GTF annotation track aligns with read pileup boundaries, validating
+  correct genome coordinate mapping.
+
+---
+
+### 7.3 pyGenomeTracks — Strand-Specific Coverage (chr4:540,000–560,000)
+
+**pyGenomeTracks** `v3.9+galaxy0` was used to visualize STAR-generated
+strand-specific bedgraph coverage for both samples simultaneously.
+
+| Track                  | Data Source                                      | Color | Height |
+|------------------------|--------------------------------------------------|-------|--------|
+| Bedgraph (Strand 1)    | RNA STAR: Coverage Uniquely mapped strand 1      | Blue  | 3      |
+| Bedgraph (Strand 2)    | RNA STAR: Coverage Uniquely mapped strand 2      | Red   | 3      |
+| Gene track             | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz` | —   | 5      |
+
+- **Region plotted:** `chr4:540,000–560,000`
+- Plot title left empty so sample names appear as track labels.
+
+![pyGenomeTracks](images/05c_pygenometracks.png)
+> *Figure 13: pyGenomeTracks output — blue tracks (strand 1) and red tracks
+> (strand 2) for GSM461177 and GSM461180, with gene annotation below.*
+
+**Key observations:**
+- **Strand 2 (red)** shows substantially higher coverage than strand 1
+  (blue) across all annotated exons for both samples.
+- The asymmetry between strands confirms the library is **reverse-stranded**
+  (reads map predominantly to the antisense strand).
+- Coverage profiles align precisely with annotated exon boundaries of
+  Thd1 and neighboring genes, confirming accurate spliced alignment.
+
+---
+
+### 7.4 STAR Gene Counts — MultiQC Aggregation
+
+**MultiQC** `v1.27+galaxy4` was used to aggregate STAR gene count outputs,
+which report read assignments under three strandness scenarios.
+
+| Parameter                  | Value                                                    |
+|----------------------------|----------------------------------------------------------|
+| Which tool generated logs? | STAR                                                     |
+| Type of STAR output        | Gene counts                                              |
+| STAR gene count output     | RNA STAR on collection N: reads per gene (Dataset collection) |
+
+> The strandness condition assigning the **most reads to genes** identifies
+> the correct library type — confirming **reverse-stranded** in this dataset.
+
+---
+
+### 7.5 Infer Experiment — Computational Strandness Inference
+
+**Convert GTF to BED12** `v357` was first run to prepare the reference
+gene model, then **Infer Experiment** `v5.0.3+galaxy0` was applied.
+
+| Parameter               | Value                                              |
+|-------------------------|----------------------------------------------------|
+| Input BAM               | RNA STAR on collection N: mapped.bam               |
+| Reference gene model    | BED12 output of Convert GTF to BED12               |
+| Reads sampled           | 200,000                                            |
+
+**Output interpretation for paired-end libraries:**
+
+- `1++,1--,2+-,2-+` → fraction assigned to **forward strand**
+- `1+-,1-+,2++,2--` → fraction assigned to **reverse strand**
+- If both fractions are **close to 0.5** → library is **unstranded**
+- If one fraction dominates (e.g., >0.8) → library is **stranded**
+
+> In this dataset, the reverse-strand fraction dominates, confirming a
+> **reverse-stranded paired-end library** — consistent with all visual
+> and coverage-based evidence above.
 
 ---
 
