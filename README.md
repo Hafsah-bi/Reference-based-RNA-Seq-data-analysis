@@ -833,8 +833,9 @@ Use **heatmap2** `(v3.2.0+galaxy1)`:
 
 ####  Normalized Counts Heatmap (Log₂ scale)
 
+<!-- INSERT IMAGE: Normalized Counts Heatmap -->
 ![Normalized Counts Heatmap](heatmap2_normalized_counts.png)
-*Figure 11. Log₂(count+1)-transformed normalized counts for the 113 most differentially
+> *Figure 11. Log₂(count+1)-transformed normalized counts for the 113 most differentially
 expressed genes. Hierarchical clustering separates treated from untreated samples,
 reflecting a consistent transcriptional response to Pasilla depletion.*
 
@@ -846,8 +847,9 @@ reflecting a consistent transcriptional response to Pasilla depletion.*
 
 #### Z-score Heatmap (Row-normalized)
 
+<!-- INSERT IMAGE: Z-score Heatmap -->
 ![Z-score Heatmap](z-score-heatmap.png)
-*Figure 12. Row-wise Z-score heatmap of the 113 most differentially expressed genes.
+> *Figure 12. Row-wise Z-score heatmap of the 113 most differentially expressed genes.
 Red and blue indicate above- and below-average expression, respectively. Two distinct
 clusters reveal genes oppositely regulated by Pasilla depletion.*
 
