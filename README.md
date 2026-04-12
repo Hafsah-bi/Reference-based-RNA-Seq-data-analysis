@@ -65,7 +65,7 @@ analysis, and functional enrichment, producing reproducible outputs at each stag
 - [12. Visualization of DE Gene Expression](#12-visualization-of-de-gene-expression)
 - [13. Gene Ontology Enrichment Analysis](#13-gene-ontology-enrichment-analysis)
 - [14. KEGG Pathway Analysis](#14-kegg-pathway-analysis)
-- [15. References](#16-references)
+- [15. References](#15-references)
 
 ---
 
