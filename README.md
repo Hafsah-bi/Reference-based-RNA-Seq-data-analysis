@@ -97,93 +97,110 @@ from raw FASTQ input through functional enrichment output.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     RAW INPUT DATA                                  │
-│         FASTQ files — Zenodo DOI: 10.5281/zenodo.6457007            │
-│   GSM461177 (PE, untreated) │ GSM461180 (PE, treated/PS-RNAi)      │
+│                        RAW INPUT DATA                               │
+│           FASTQ files — Zenodo DOI: 10.5281/zenodo.6457007          │
+│     GSM461177 (PE, untreated) │ GSM461180 (PE, treated/PS-RNAi)    │
+│              + 5 additional samples for DE analysis                 │
 └───────────────────────────┬─────────────────────────────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │     QUALITY CONTROL             │
-          │   Falco  ──►  MultiQC           │──► QC Summary Report
-          └─────────────────┬───────────────┘
+          ┌─────────────────────────────────────┐
+          │         QUALITY CONTROL             │
+          │  Flatten Collection                 │
+          │  Falco (v1.2.4) ──► MultiQC         │──► QC Summary Report
+          │  Cutadapt (v5.2) ──► MultiQC        │──► Trimming Report
+          └─────────────────┬───────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │     SPLICE-AWARE ALIGNMENT      │    ┌──────────────────────┐
-          │         RNA STAR (dm6)          │──► │ BAM (sorted)         │
-          │                                 │    │ ReadsPerGene.tab     │
-          │                                 │    │ SJ.out (junctions)   │
-          │                                 │    │ BigWig Str1 (🔵 Blue)│
-          │                                 │    │ BigWig Str2 (🔴 Red) │
-          └─────────────────┬───────────────┘    └──────────────────────┘
+          ┌─────────────────────────────────────┐   ┌────────────────────────┐
+          │      SPLICE-AWARE ALIGNMENT         │   │ mapped.bam (sorted)    │
+          │   RNA STAR v2.7.11b (dm6 + GTF)     │──►│ ReadsPerGene.tab       │
+          │                                     │   │ SJ.out (junctions)     │
+          │                                     │   │ Bedgraph Str1 (🔵 Blue)│
+          │                                     │   │ Bedgraph Str2 (🔴 Red) │
+          └─────────────────┬───────────────────┘   └────────────────────────┘
                             │
                             ▼
-          ┌──────────────────────────────────────────────┐
-          │         ALIGNMENT VISUALIZATION               │
-          │  MultiQC (STAR logs)                         │
-          │  IGV ──► Read coverage at Pasilla locus      │
-          │  Sashimi Plot ──► Splice junction usage      │
-          │  JBrowse2 ──► Interactive genome browser     │
-          │  BigWig tracks ──► Strand1=Blue, Strand2=Red │
-          └─────────────────┬────────────────────────────┘
+          ┌─────────────────────────────────────┐
+          │      ALIGNMENT VISUALIZATION        │
+          │  MultiQC (STAR logs)                │──► Mapping summary
+          │  IGV ──► chr4:540,000–560,000       │──► Read pileup + Sashimi
+          │  JBrowse2 ──► BAM + GTF tracks      │──► Interactive browser
+          └─────────────────┬───────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │   STRANDEDNESS ESTIMATION       │
-          │     Infer Experiment (RSeQC)    │──► Reverse-stranded confirmed
-          └─────────────────┬───────────────┘    (featureCounts param = 2)
+          ┌─────────────────────────────────────┐
+          │    STRANDEDNESS ESTIMATION          │
+          │  IGV ──► Color by first-of-pair     │
+          │  JBrowse2 ──► Pileup strand color   │
+          │  pyGenomeTracks ──► Bedgraph Str1/2 │──► Strand 2 (red) dominant
+          │  MultiQC (STAR GeneCounts)          │
+          │  Infer Experiment (RSeQC v5.0.3)    │──► Reverse-stranded confirmed
+          └─────────────────┬───────────────────┘    (featureCounts param = 2)
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │      READ QUANTIFICATION        │
-          │       featureCounts             │──► Count matrix
-          │  (All 7 samples × ~14,000 genes)│    (genes × samples)
-          └─────────────────┬───────────────┘
+          ┌─────────────────────────────────────┐
+          │        READ QUANTIFICATION          │
+          │  Remove header (4 lines)            │
+          │  Cut columns (c1, c4)               │──► FeatureCount-like files
+          │  Gene length & GC content (v0.1.2)  │──► Gene lengths per gene
+          │  (All 7 samples × ~14,000 genes)    │
+          └─────────────────┬───────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐    ┌──────────────────────┐
-          │   DIFFERENTIAL EXPRESSION       │    │ DE result table      │
-          │          DESeq2                 │──► │ PCA plot             │
-          │  (design: ~library_type +       │    │ Sample heatmap       │
-          │           condition)            │    │ MA plot              │
-          │                                 │    │ Dispersion plot      │
-          └─────────────────┬───────────────┘    └──────────────────────┘
+          ┌─────────────────────────────────────┐   ┌────────────────────────┐
+          │    DIFFERENTIAL EXPRESSION          │   │ DE result table        │
+          │    DESeq2 v2.11.40.8                │──►│ Normalised counts      │
+          │    design: ~sequencing + condition  │   │ PCA plot               │
+          │    (7 samples: 3 treated,           │   │ Sample distance heatmap│
+          │     4 untreated)                    │   │ MA + dispersion plots  │
+          └─────────────────┬───────────────────┘   └────────────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │    ANNOTATION & FILTERING       │
-          │  Annotate DESeq2 output         │──► Gene symbols + descriptions
-          │  Filter: padj < 0.05            │
-          │          |log2FC| > 1           │──► ~1,200 significant DE genes
-          └─────────────────┬───────────────┘
+          ┌─────────────────────────────────────┐
+          │     ANNOTATION & FILTERING          │
+          │  Annotate DESeq2 (dm6 Ensembl)      │──► Gene symbols + descriptions
+          │  Filter: padj < 0.05                │
+          │  Filter: abs(log2FC) > 1            │──► 113 significant DE genes
+          └─────────────────┬───────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │    EXPRESSION VISUALIZATION     │
-          │  heatmap2 ──► Top 50 DE genes   │
-          │  Volcano plot ──► FC vs. padj   │
-          └─────────────────┬───────────────┘
+          ┌─────────────────────────────────────┐
+          │     EXPRESSION VISUALIZATION        │
+          │  Join + Cut normalized counts       │
+          │  heatmap2 ──► Log₂ normalized       │──► Fig 11: Normalized heatmap
+          │  heatmap2 ──► Z-score (row-wise)    │──► Fig 12: Z-score heatmap
+          └─────────────────┬───────────────────┘
                             │
                             ▼
-          ┌─────────────────────────────────┐
-          │   FUNCTIONAL ENRICHMENT         │
-          │  goseq ──► GO (BP / MF / CC)    │──► RNA splicing, mRNA binding
-          │  goseq + pathview ──► KEGG      │──► Spliceosome (dme03040)
-          └─────────────────────────────────┘
+          ┌─────────────────────────────────────┐
+          │     FUNCTIONAL ENRICHMENT           │
+          │                                     │
+          │  Prepare inputs:                    │
+          │  Compute + Cut + Change Case        │──► Gene IDs & DE boolean
+          │  Change Case (gene lengths)         │──► Gene IDs & length
+          │                                     │
+          │  goseq (v1.50.0) ──► GO analysis    │──► Fig 13: BP/MF/CC plot
+          │  (BP, MF, CC — Wallenius method)    │    RNA splicing, ion binding
+          │                                     │
+          │  goseq (v1.50.0) ──► KEGG analysis  │──► 127 pathways identified
+          │  Cut log2FC ──► Pathview (v1.34.0)  │──► Fig 14: dme00010
+          │                                     │    Fig 15: dme03040
+          └─────────────────────────────────────┘
 ```
 
-| Stage                    | Tool(s)                    | Version     |
-|--------------------------|----------------------------|-------------|
-| Quality Control          | Falco, MultiQC             | Latest      |
-| Splice-aware Alignment   | RNA STAR                   | 2.7.x       |
-| Alignment Visualization  | IGV, Sashimi, JBrowse2     | 2.16+ / Latest |
-| Strandedness Estimation  | Infer Experiment (RSeQC)   | 4.x         |
-| Read Quantification      | featureCounts (Subread)    | 2.x         |
-| Differential Expression  | DESeq2                     | 1.38+       |
-| Result Annotation        | Annotate DESeq2 (Galaxy)   | Latest      |
-| GO Enrichment            | goseq                      | 1.50+       |
-| KEGG Pathway Analysis    | goseq + pathview           | Latest      |
+| Stage | Tool(s) | Version |
+|---|---|---|
+| Quality Control | Falco, Cutadapt, MultiQC | v1.2.4 / v5.2 / v1.27 |
+| Splice-aware Alignment | RNA STAR | v2.7.11b |
+| Alignment Visualization | IGV, JBrowse2, MultiQC | v2.16+ / v3.6.5 |
+| Strandedness Estimation | pyGenomeTracks, Infer Experiment (RSeQC) | v3.9 / v5.0.3 |
+| Read Quantification | STAR GeneCounts, Gene length & GC content | v2.7.11b / v0.1.2 |
+| Differential Expression | DESeq2 | v2.11.40.8 |
+| Result Annotation | Annotate DESeq2 (Galaxy) | Latest |
+| Expression Visualization | heatmap2 | v3.2.0 |
+| GO Enrichment | goseq | v1.50.0 |
+| KEGG Pathway Analysis | goseq + Pathview | v1.50.0 / v1.34.0 |
 
 ---
 
