@@ -200,31 +200,91 @@ sample name and condition.
 
 ## 4. Quality Control
 
-Sequencing quality was assessed per sample using **Falco**, a high-performance
-FastQC-compatible tool. Results across all samples were aggregated into a
-single interactive report using **MultiQC**.
+Sequencing quality was assessed using **Falco**, an efficiency-optimized
+rewrite of FastQC, followed by adapter trimming with **Cutadapt**. All
+reports were aggregated using **MultiQC**.
 
-| Parameter           | Value                        |
-|---------------------|------------------------------|
-| Tool                | Falco (batch mode, 4 files)  |
-| Aggregation         | MultiQC — FastQC/Falco module|
-| Report title        | RNA-Seq QC Report            |
+---
 
-| QC Metric            | Acceptance Threshold          | Observed Status |
-|----------------------|-------------------------------|-----------------|
-| Per-base quality     | Phred ≥ 28 across all bases   | ✅ Pass          |
-| Per-sequence quality | Peak at Q30+                  | ✅ Pass          |
-| Adapter content      | < 5% at 3′ end                | ✅ Pass          |
-| Sequence duplication | < 30%                         | ✅ Pass          |
-| GC content           | Bell curve centered ~50%      | ✅ Pass          |
+### 4.1 Flatten Collection
 
-<!-- INSERT IMAGE: MultiQC HTML summary report -->
-![MultiQC Report](images/02_multiqc_report.png)
-> *Figure 2: MultiQC aggregated quality report — all samples pass QC thresholds.*
+As MultiQC does not support list-of-pairs collections, the `2 PE fastqs`
+paired collection was first converted into a simple list using the
+**Flatten Collection** tool prior to Falco execution.
 
-<!-- INSERT IMAGE: Per-base sequence quality plot -->
-![Per-base Quality](images/02b_per_base_quality.png)
-> *Figure 3: Per-base sequence quality across all samples — Phred scores remain above Q28 throughout.*
+| Parameter          | Value          |
+|--------------------|----------------|
+| Input Collection   | `2 PE fastqs`  |
+
+---
+
+### 4.2 Falco — Per-Sample Quality Assessment
+
+**Falco** `v1.2.4+galaxy0` was run on the flattened collection to generate
+per-file sequence quality reports.
+
+| Parameter                                  | Value                                      |
+|--------------------------------------------|--------------------------------------------|
+| Raw read data from your current history    | Output of Flatten Collection (Dataset collection) |
+
+---
+
+### 4.3 MultiQC — Aggregation of Falco Reports
+
+**MultiQC** `v1.27+galaxy4` was used to consolidate all individual Falco
+reports into a single comparative summary. Falco output is passed as
+FastQC-compatible input, as Falco is a drop-in replacement for FastQC.
+
+| Parameter                  | Value                                              |
+|----------------------------|----------------------------------------------------|
+| Which tool generated logs? | FastQC (Falco as drop-in replacement)              |
+| FastQC output              | Falco on collection N: RawData (Dataset collection)|
+
+---
+
+### 4.4 Cutadapt — Quality Trimming and Filtering
+
+**Cutadapt** `v5.2+galaxy0` was applied to the `2 PE fastqs` paired
+collection to remove low-quality bases and short reads.
+
+| Parameter                        | Value                        |
+|----------------------------------|------------------------------|
+| Read type                        | Paired-end Collection        |
+| Paired Collection                | `2 PE fastqs`                |
+| Quality cutoff R1                | 20                           |
+| Minimum length R1                | 20                           |
+| Additional output                | Report (per-adapter statistics) |
+
+---
+
+### 4.5 MultiQC — Aggregation of Cutadapt Reports
+
+**MultiQC** `v1.27+galaxy4` was run a second time to aggregate the
+Cutadapt per-adapter statistics reports.
+
+| Parameter                  | Value                                                        |
+|----------------------------|--------------------------------------------------------------|
+| Which tool generated logs? | Cutadapt/Trim Galore!                                        |
+| Output of Cutadapt         | Cutadapt on collection N: Report (Dataset collection)        |
+
+<!-- INSERT IMAGE: MultiQC aggregated Cutadapt report -->
+![MultiQC Cutadapt](images/02d_multiqc_cutadapt.png)
+> *Figure 5: MultiQC Cutadapt summary — trimming statistics, read retention rates, and quality improvement across all samples.*
+
+---
+
+### Quality Control Summary
+
+- **Adapter content, duplication levels, and sequence length distribution**
+  pass across all four samples — no critical issues detected.
+- **Per Base Sequence Content** fails in all samples — expected in RNA-Seq
+  data due to random hexamer priming bias at the 5′ end; not a quality concern.
+- **Per Tile Sequence Quality** fails in GSM461177 (forward/reverse) —
+  reflects localized flow cell tile artifacts; does not impact mapping quality.
+- **Overrepresented Sequences** warns in GSM461177 reverse and GSM461180
+  reverse — addressed downstream by Cutadapt trimming.
+- **Per Sequence GC Content** warns in GSM461180 forward — minor deviation
+  from expected distribution; acceptable for downstream analysis.
 
 ---
 
