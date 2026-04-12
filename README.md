@@ -840,8 +840,8 @@ expressed genes. Hierarchical clustering separates treated from untreated sample
 reflecting a consistent transcriptional response to Pasilla depletion.*
 
 > - 🔴 **Red intensity** reflects higher log₂-normalized expression; the single brightest row (deep red across all samples) represents the most highly expressed DE gene overall.
-> - 📌 **Two major gene clusters** emerge: the upper cluster shows uniformly high expression across all samples, while the lower cluster contains genes with notably lower expression — particularly in treated samples.
-> - 🧬 **Treated vs. untreated samples cluster separately** on the column dendrogram, confirming that Pasilla depletion drives a consistent and reproducible transcriptional shift.
+> - **Two major gene clusters** emerge: the upper cluster shows uniformly high expression across all samples, while the lower cluster contains genes with notably lower expression — particularly in treated samples.
+> - **Treated vs. untreated samples cluster separately** on the column dendrogram, confirming that Pasilla depletion drives a consistent and reproducible transcriptional shift.
 
 ---
 
@@ -854,8 +854,8 @@ Red and blue indicate above- and below-average expression, respectively. Two dis
 clusters reveal genes oppositely regulated by Pasilla depletion.*
 
 > - 🔵🔴 **Blue = below-average expression; Red = above-average expression** (relative to each gene's own mean across samples), making cross-sample patterns immediately visible.
-> - 📌 **Two distinct gene groups** are revealed: genes **upregulated in treated** samples (red in treated / blue in untreated) and genes **downregulated in treated** samples (blue in treated / red in untreated) — a clear signature of Pasilla-regulated transcription.
-> - 🧬 **Treated samples (GSM461179, 180, 181) cluster together**, and untreated samples (GSM461176, 177, 178, 182) form their own group — validating the biological separation between conditions.
+> -  **Two distinct gene groups** are revealed: genes **upregulated in treated** samples (red in treated / blue in untreated) and genes **downregulated in treated** samples (blue in treated / red in untreated) — a clear signature of Pasilla-regulated transcription.
+> - **Treated samples (GSM461179, 180, 181) cluster together**, and untreated samples (GSM461176, 177, 178, 182) form their own group — validating the biological separation between conditions.
 
 
 
