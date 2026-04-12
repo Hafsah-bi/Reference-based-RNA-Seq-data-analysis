@@ -861,36 +861,102 @@ clusters reveal genes oppositely regulated by Pasilla depletion.*
 
 ## 13. Gene Ontology Enrichment Analysis
 
-**goseq** was applied to the filtered DE gene list to identify enriched
-Gene Ontology (GO) terms across Biological Process (BP), Molecular
-Function (MF), and Cellular Component (CC) ontologies. The Wallenius
-approximation was used to correct for gene-length bias inherent in
-RNA-Seq count data.
+**goseq** (Young et al. 2010) performs GO analysis on RNA-Seq data while
+correcting for length bias — a known source of over-detection in long and
+highly-expressed transcripts. It is equally applicable to KEGG pathway analysis.
 
-| Parameter                  | Value                              |
-|----------------------------|------------------------------------|
-| Input gene list            | Significant DE genes (gene IDs)    |
-| Gene lengths               | Derived from featureCounts output  |
-| Reference genome           | dm6                                |
-| Ontology categories        | GO: BP, MF, CC                     |
-| Bias correction method     | Wallenius approximation            |
-| Significance threshold     | padj < 0.05                        |
+---
 
-| GO Term ID  | Description                   | padj     | DE Genes |
-|-------------|-------------------------------|----------|----------|
-| GO:0008380  | RNA splicing                  | 1.2e−08  | 45       |
-| GO:0003729  | mRNA binding                  | 3.4e−07  | 38       |
-| GO:0006397  | mRNA processing               | 5.6e−06  | 52       |
-| GO:0005681  | Spliceosomal complex          | 8.9e−06  | 29       |
-| GO:0000398  | mRNA splicing via spliceosome | 1.1e−05  | 34       |
+### Inputs Required by goseq
 
-<!-- INSERT IMAGE: GO enrichment dot/bar plot -->
-![GO Analysis](images/11a_GO_enrichment_plot.png)
-> *Figure 23: Top enriched GO Biological Process terms — RNA splicing and mRNA processing predominate, consistent with Pasilla's role as a splicing regulator.*
+goseq requires two input files:
 
-<!-- INSERT IMAGE: goseq result table -->
-![GO Table](images/11b_GO_result_table.png)
-> *Figure 24: goseq output table — GO term IDs, descriptions, adjusted p-values, and DE gene counts.*
+1. **Differentially expressed genes table** — Gene IDs (unique, uppercase) paired
+   with a boolean: `True` if differentially expressed, `False` otherwise.
+2. **Gene length file** — to statistically correct for length bias.
+
+---
+
+### Preparing Input 1 — Gene IDs and Differential Expression
+
+**Step 1 — Compute** *(Galaxy v2.1)* on the DESeq2 result file:
+
+| Parameter | Value |
+|---|---|
+| Add expression | `bool(float(c7)<0.05)` |
+| Mode of operation | Append |
+| Autodetect column types | No |
+| If expression cannot be computed | Fill with replacement value: `False` |
+
+**Step 2 — Cut Columns:** Extract `c1, c8` (Tab-delimited) from Compute output.
+
+**Step 3 — Change Case:** Convert `c1` to **Upper case**.
+
+> Rename output: **`Gene IDs and differential expression`**
+
+---
+
+### Preparing Input 2 — Gene IDs and Length
+
+Copy the **Gene length** output from the *Gene length and GC content* tool,
+then apply **Change Case** on `c1` (Tab-delimited → Upper case).
+
+> Rename output: **`Gene IDs and length`**
+
+---
+
+### Running goseq *(Galaxy v1.50.0+galaxy0)*
+
+| Parameter | Value |
+|---|---|
+| Differentially expressed genes file | Gene IDs and differential expression |
+| Gene lengths file | Gene IDs and length |
+| Genome | Fruit fly (dm6) |
+| Gene ID format | Ensembl Gene ID |
+| Categories | GO: Cellular Component, Biological Process, Molecular Function |
+| Output Top GO terms plot | Yes |
+| Extract DE genes per category | Yes |
+
+---
+
+### Output — Ranked Category List (Wallenius Method)
+
+The primary output table contains the following columns per GO term:
+
+| Column | Description |
+|---|---|
+| `category` | GO term identifier |
+| `over_rep_pval` | p-value for over-representation in DE genes |
+| `under_rep_pval` | p-value for under-representation in DE genes |
+| `numDEInCat` | Number of DE genes in the category |
+| `numInCat` | Total genes in the category |
+| `term` | GO term description |
+| `ontology` | BP, CC, or MF |
+| `p.adjust.over_represented` | BH-adjusted over-representation p-value |
+| `p.adjust.under_represented` | BH-adjusted under-representation p-value |
+
+---
+
+#### Figure 13 — Top Over-Represented GO Categories
+
+<!-- INSERT IMAGE: Top over-represented categories -->
+![Top over-represented categories in CC, BP, MF](Top_over-represented_categories.png)
+
+> *Figure 13. Top over-represented Gene Ontology categories across Cellular Component (CC),
+Biological Process (BP), and Molecular Function (MF), identified by goseq using the
+Wallenius method. Bar length represents the percentage of differentially expressed genes
+in each category; point size reflects total gene count, and colour indicates the
+Benjamini-Hochberg adjusted p-value.*
+
+> - **Biological process terms dominate** the top rankings — *multicellular organismal
+>   process* and *regulation of biological/cellular process* are among the most
+>   significantly over-represented, implicating Pasilla in broad developmental regulation.
+> - **Molecular function and cellular component terms** such as *ion binding*,
+>   *catalytic activity*, and *membrane-bounded organelle* are also enriched, suggesting
+>   Pasilla-regulated genes are functionally diverse and spatially distributed across
+>   multiple cellular compartments.
+> - **Adjusted p-values reach as low as 4.59 × 10⁻⁴⁰**, confirming that the
+>   observed enrichment is highly significant and not an artifact of multiple testing.
 
 ---
 
