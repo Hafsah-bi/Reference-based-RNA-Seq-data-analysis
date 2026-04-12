@@ -709,36 +709,55 @@ full gene descriptions, and chromosomal positions using the Galaxy
 | FBgn0000256  | casp      | −1.65  | 2.1e−08  | 1.8e−06  | caspar               |
 
 <!-- INSERT IMAGE: Annotated DESeq2 result table -->
-![Annotated DESeq2](images/08_annotated_deseq2_table.png)
-> *Figure 17: Annotated DESeq2 results — gene symbols and functional descriptions appended to Ensembl IDs.*
+![Annotated DESeq2](images/10_annotated_deseq2_table.png)
+> *Figure 10: Annotated DESeq2 results — gene symbols and functional descriptions appended to Ensembl IDs.*
 
 ---
 
 ## 11. Extraction of Differentially Expressed Genes
 
-The annotated DESeq2 table was filtered using compound expression criteria
-to retain only statistically significant differentially expressed genes.
-Two sequential filters were applied using the Galaxy **Filter** tool:
+We extract the most differentially expressed genes due to Pasilla gene depletion, applying thresholds on **adjusted p-value** and **fold change (FC)**.
 
-```
-Filter 1 (Significance):   c7 < 0.05       [column 7 = padj]
-Filter 2 (Effect size):    abs(c3) > 1     [column 3 = log2FoldChange]
-```
+---
 
-| Category              | Gene Count | Filter Criterion              |
-|-----------------------|------------|-------------------------------|
-| Total genes tested    | ~14,000    | All expressed genes           |
-| Significant DE genes  | ~1,200     | padj < 0.05                   |
-| Upregulated           | ~600       | padj < 0.05 AND log2FC > 1    |
-| Downregulated         | ~600       | padj < 0.05 AND log2FC < −1   |
+### Step 1 — Filter by Adjusted P-value (< 0.05)
 
-<!-- INSERT IMAGE: Filtered DE gene list -->
-![DE Gene List](images/09_filtered_DE_genes.png)
-> *Figure 18: Filtered DE gene table — 1,200 significant genes retained after applying both cutoffs.*
+Use **Filter data on any column using simple expressions** tool:
 
-<!-- INSERT IMAGE: Volcano plot -->
-![Volcano Plot](images/09b_volcano_plot.png)
-> *Figure 19: Volcano plot — log2FC (x-axis) vs. −log10(padj) (y-axis). Significant DE genes highlighted in red.*
+| Parameter | Value |
+|---|---|
+| **Filter** | Annotated DESeq2 results |
+| **With following condition** | `c7<0.05` |
+| **Number of header lines to skip** | `1` |
+
+> Rename output → `Genes with significant adj p-value`
+
+---
+
+### Step 2 — Filter by Fold Change (abs(log₂FC) > 1)
+
+> DESeq2 outputs **log₂(FC)**, not FC directly.  
+> `abs(log₂FC) > 1` corresponds to **FC > 2 or FC < 0.5**.
+
+Use **Filter data on any column using simple expressions** tool again:
+
+| Parameter | Value |
+|---|---|
+| **Filter** | `Genes with significant adj p-value` |
+| **With following condition** | `abs(c3)>1` |
+| **Number of header lines to skip** | `1` |
+
+> Rename output → `Genes with significant adj p-value & abs(log2(FC)) > 1`
+
+---
+
+### Result
+
+| Metric | Value |
+|---|---|
+| **Total genes extracted** | 113 genes (114 lines incl. header) |
+| **% of sig. DE genes** | 11.79% |
+| **Columns included** | Gene ID, Mean normalized counts, log₂FC, adj p-value, gene symbol, position |
 
 ---
 
