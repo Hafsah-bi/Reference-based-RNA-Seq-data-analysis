@@ -271,7 +271,6 @@ Cutadapt per-adapter statistics reports.
 ![MultiQC Cutadapt](images/1_multiqc_cutadapt.png)
 > *Figure 1: MultiQC FastQC Status Checks heatmap across 4 samples
 > (GSM461177 forward/reverse, GSM461180 forward/reverse).*
----
 
 ### Quality Control Summary
 
@@ -288,43 +287,60 @@ Cutadapt per-adapter statistics reports.
 
 ---
 
-## 5. Alignment — RNA STAR
+## 5. Mapping
 
-Paired-end reads were aligned to the *D. melanogaster* dm6 reference genome
-using **RNA STAR** in two-pass mode. STAR performs splice-aware alignment,
-detecting both annotated and novel splice junctions across exon–intron
-boundaries — a requirement for accurate eukaryotic RNA-Seq mapping.
+Trimmed reads were mapped to the *Drosophila melanogaster* genome using
+**RNA STAR** `v2.7.11b+galaxy0`, a splice-aware aligner suited for RNA-Seq data.
 
-| Parameter                              | Value                              |
-|----------------------------------------|------------------------------------|
-| Read type                              | Paired-End                         |
-| Reference genome                       | *D. melanogaster* dm6              |
-| Gene annotation                        | Ensembl dm6 GTF                    |
-| Alignment mode                         | Two-pass                           |
-| Junction overhang length               | 100 (read length − 1)              |
-| Output format                          | BAM SortedByCoordinate             |
-| Per-gene read count output             | Enabled (ReadsPerGene.tab)         |
-| Strand-specific coverage output        | Enabled (BigWig Str1 + Str2)       |
+---
 
-| Sample     | Uniquely Mapped | Multi-mapped | Unmapped |
-|------------|-----------------|--------------|----------|
-| GSM461177  | ~85%            | ~5%          | ~10%     |
-| GSM461180  | ~84%            | ~5%          | ~11%     |
+### 5.1 Reference Annotation Import
 
-**Outputs generated per sample:**
+The Ensembl gene annotation file was imported from Zenodo into the current
+Galaxy history and verified to be in **GTF** format (not GFF).
 
-| Output File           | Description                                        |
-|-----------------------|----------------------------------------------------|
-| BAM (sorted)          | Coordinate-sorted aligned reads                    |
-| Log.final.out         | Mapping statistics summary                         |
-| SJ.out.tab            | Annotated and novel splice junctions               |
-| ReadsPerGene.tab      | Raw read counts per gene (input for featureCounts) |
-| BigWig Strand 1       | Forward strand coverage — **rendered in Blue**     |
-| BigWig Strand 2       | Reverse strand coverage — **rendered in Red**      |
+```
+https://zenodo.org/record/6457007/files/Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz
+```
 
-<!-- INSERT IMAGE: STAR final log mapping statistics -->
-![STAR Mapping Log](images/03_star_mapping_log.png)
-> *Figure 4: STAR Log.final.out — uniquely mapped reads ~85% for both samples.*
+| Detail       | Value                                              |
+|--------------|----------------------------------------------------|
+| File         | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz`|
+| Datatype     | `gtf` / `gtf.gz`                                  |
+| Source       | Ensembl BDGP6.32 release 109 (UCSC-formatted)     |
+
+---
+
+### 5.2 RNA STAR — Spliced Alignment
+
+**RNA STAR** `v2.7.11b+galaxy0` was run on the Cutadapt-trimmed paired
+collection using the dm6 built-in genome index and the imported GTF for
+splice junction annotation.
+
+| Parameter                                  | Value                                                        |
+|--------------------------------------------|--------------------------------------------------------------|
+| Read type                                  | Paired-end (as collection)                                   |
+| RNA-Seq FASTQ paired reads                 | Cutadapt on collection N: Reads                              |
+| Reference genome                           | Built-in index                                               |
+| Genome / annotation mode                   | Genome reference without built-in gene model (GTF provided)  |
+| Reference genome                           | Fly (*Drosophila melanogaster*): dm6 Full                    |
+| Gene model (GTF) file                      | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz`          |
+| Junction overhang length                   | 36 *(read length − 1)*                                       |
+| Per gene/transcript output                 | Per gene read counts (GeneCounts)                            |
+| Compute coverage                           | Yes — bedgraph format                                        |
+
+---
+
+### 5.3 MultiQC — Aggregation of STAR Logs
+
+**MultiQC** `v1.27+galaxy4` was used to aggregate the STAR alignment
+log files across all samples into a unified mapping summary.
+
+| Parameter                  | Value                                          |
+|----------------------------|------------------------------------------------|
+| Which tool generated logs? | STAR                                           |
+| Type of STAR output        | Log                                            |
+| STAR log output            | RNA STAR on collection N: log (Dataset collection) |
 
 ---
 
