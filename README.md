@@ -962,53 +962,110 @@ Benjamini-Hochberg adjusted p-value.*
 
 ## 14. KEGG Pathway Analysis
 
-KEGG pathway enrichment was performed using **goseq** against the
-*D. melanogaster* (dme) KEGG database. Pathway-level diagrams were
-rendered using **pathview**, with DE genes highlighted according to
-their direction of expression change.
-
-| Parameter           | Value                         |
-|---------------------|-------------------------------|
-| Input gene list     | Significant DE genes          |
-| Organism code       | dme (*D. melanogaster*)       |
-| Database            | KEGG                          |
-| Significance cutoff | padj < 0.05                   |
-| Diagram rendering   | pathview (DE genes overlaid)  |
-
-| KEGG ID   | Pathway Name                   | padj     | DE Genes |
-|-----------|--------------------------------|----------|----------|
-| dme03040  | Spliceosome                    | 2.1e−09  | 38       |
-| dme03013  | RNA transport                  | 4.5e−06  | 29       |
-| dme03015  | mRNA surveillance pathway      | 7.8e−05  | 21       |
-| dme04120  | Ubiquitin mediated proteolysis | 3.0e−03  | 18       |
-
-<!-- INSERT IMAGE: KEGG enrichment bar chart -->
-![KEGG Enrichment](images/12a_KEGG_enrichment_barplot.png)
-> *Figure 25: KEGG pathway enrichment — spliceosome pathway most significantly enriched, confirming Pasilla's central role in splicing regulation.*
-
-<!-- INSERT IMAGE: Pathview spliceosome diagram -->
-![KEGG Pathview](images/12b_KEGG_spliceosome_pathview.png)
-> *Figure 26: Pathview diagram of the spliceosome pathway — DE genes highlighted in red (upregulated) and blue (downregulated).*
+**goseq** can also identify enriched KEGG pathways — a curated database of
+molecular interaction and reaction networks integrating genes, proteins, RNAs,
+and chemical compounds.
 
 ---
 
-## 15. Results Summary
+### ⚙️ Running goseq for KEGG *(Galaxy v1.50.0+galaxy0)*
 
-| Analysis                  | Result                                              |
-|---------------------------|-----------------------------------------------------|
-| Mapping rate              | ~84–85% uniquely mapped reads per sample            |
-| Library strandedness      | Reverse-stranded (Infer Experiment confirmed)       |
-| Total DE genes            | ~1,200 (padj < 0.05, \|log2FC\| > 1)               |
-| Upregulated genes         | ~600                                                |
-| Downregulated genes       | ~600                                                |
-| Top GO term               | RNA splicing (GO:0008380, padj = 1.2e−08)          |
-| Top KEGG pathway          | Spliceosome (dme03040, padj = 2.1e−09)             |
-| PCA PC1 variance          | ~55–65% (condition-driven separation)              |
+| Parameter | Value |
+|---|---|
+| Differentially expressed genes file | Gene IDs and differential expression |
+| Gene lengths file | Gene IDs and length |
+| Genome | Fruit fly (dm6) |
+| Gene ID format | Ensembl Gene ID |
+| Categories | KEGG |
+| Output Top GO terms plot | No |
+| Extract DE genes per category | Yes |
+
+**Outputs:** A ranked KEGG terms table with statistics + a table of DE genes
+per KEGG pathway.
+
+---
+
+### Overlaying Log₂FC on KEGG Pathways
+
+**Step 1 — Cut Columns:** Extract `c1, c3` (Tab-delimited) from
+*Genes with significant adj p-value*.
+> Rename to: **`Genes with significant adj p-value and their Log2 FC`**
+
+**Step 2 — Create pathway ID file** named **`KEGG pathways to plot`**:
+```
+00010
+03040
+```
+
+**Step 3 — Pathview** *(Galaxy v1.34.0+galaxy0)*:
+
+| Parameter | Value |
+|---|---|
+| Number of pathways | Multiple |
+| KEGG pathways file | KEGG pathways to plot |
+| File has header | No |
+| Species | Fly |
+| Gene data file | Genes with significant adj p-value and their Log2 FC |
+| Gene data has header | Yes |
+| Gene ID format | Ensembl Gene ID |
+| Compound data | No |
+| Output format | KEGG native |
+| Plot on same layer | Yes |
+
+---
+
+### Results Summary
+
+- 127 KEGG pathways identified across 128 lines (including header).
+- **2 pathways over-represented** (2.34%): `01100` (Metabolic pathways)
+  and `00010` (Glycolysis / Gluconeogenesis).
+- **No pathways under-represented.**
+
+> **Note on colour code:** Green = log₂FC < 0 (downregulated);
+> Red = log₂FC > 0 (upregulated). This is counterintuitive relative to
+> standard conventions.
+
+---
+
+#### Figure 14 — Glycolysis / Gluconeogenesis Pathway 
+
+![Glycolysis / Gluconeogenesis](images/14_glyconeogenesis.png)
+
+>*Figure 14. Pathview visualization of the Glycolysis / Gluconeogenesis pathway
+(dme00010) in* Drosophila melanogaster. *Coloured boxes represent differentially
+expressed genes overlaid with log₂ fold change values; red indicates
+upregulation and green indicates downregulation upon Pasilla depletion.*
+
+> - **Multiple enzyme nodes are upregulated** (red) across the glycolytic
+>   cascade, suggesting increased glycolytic flux in Pasilla-depleted samples.
+> - **A subset of nodes appears green** (log₂FC < 0), indicating selective
+>   downregulation at specific enzymatic steps.
+> - **This pathway's over-representation** confirms that Pasilla depletion
+>   has a measurable impact on core carbohydrate metabolism.
+
+---
+
+#### Figure 15 — Spliceosome Pathway 
+
+![Spliceosome](images/15_spliceosome.png)
+
+>*Figure 15. Pathview visualization of the Spliceosome pathway (dme03040) in*
+Drosophila melanogaster. *Coloured nodes highlight differentially expressed
+spliceosomal components, with red indicating upregulation and green indicating
+downregulation relative to untreated samples.*
+
+> - **SF1 is notably downregulated** (green), consistent with Pasilla's
+>   known role as an RNA-binding splicing regulator.
+> - **Several snRNP-associated components show upregulation** (red),
+>   suggesting a compensatory or dysregulated splicing response.
+> - **Although not significantly over-represented**, the spliceosome pathway
+>   contains the most biologically relevant DE genes given Pasilla's direct
+>   function in pre-mRNA splicing.
 
 
 ---
 
-## 17. References
+## 16. References
 
 1. **Galaxy Training Network** (2016–2026, Revision 109) — Reference-based
    RNA-Seq data analysis tutorial.
