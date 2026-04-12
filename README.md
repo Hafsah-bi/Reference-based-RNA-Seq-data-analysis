@@ -192,6 +192,10 @@ https://zenodo.org/record/6457007/files/GSM461180_2.fastqsanger
 Full dataset files are approximately **1.5 GB each**. Subsets (~50 MB)
 are available for rapid pipeline testing.
 
+The four files were subsequently organized into a paired dataset
+collection named **`2 PE fastqs`**, with each pair identified by
+sample name and condition.
+
 ---
 
 ## 4. Quality Control
