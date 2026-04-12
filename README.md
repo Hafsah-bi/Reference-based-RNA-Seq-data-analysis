@@ -346,77 +346,68 @@ log files across all samples into a unified mapping summary.
 
 ## 6. Inspection of Mapping Results
 
-### 6.1 MultiQC on STAR Logs
-
-STAR alignment log files from both samples were aggregated using **MultiQC**
-to produce a comparative summary of mapping rates across samples.
-
-<!-- INSERT IMAGE: MultiQC STAR alignment summary -->
-![MultiQC STAR](images/04a_multiqc_star_alignment.png)
-> *Figure 5: MultiQC STAR module — uniquely mapped, multi-mapped, and unmapped read fractions per sample.*
+Alignment results were inspected visually using two genome browsers:
+**IGV** (locally) and **JBrowse2** (integrated in Galaxy), both focused
+on the region `chr4:540,000–560,000`.
 
 ---
 
-### 6.2 IGV — Integrative Genomics Viewer
+### 6.1 IGV — Local Visualization
 
-BAM files were loaded into **IGV** and navigated to the *Pasilla* gene locus
-(`chr2L:7,529,000–7,540,000`) for visual inspection of read coverage and
-splice junction arcs across both conditions.
+Reads were loaded into IGV directly from Galaxy using the built-in
+visualize interface.
 
-<!-- INSERT IMAGE: IGV GSM461177 untreated at Pasilla locus -->
-![IGV Untreated](images/04b_igv_GSM461177_PE_gene.png)
-> *Figure 6: IGV — GSM461177 (untreated, PE) at Pasilla gene coordinates. Read coverage and splice arcs visible.*
+- Open the **RNA STAR on collection N: mapped.bam** collection in Galaxy.
+- Expand `GSM461177_untreat_paired` → click the **visualize (chart) icon**.
+- Select **local in display with IGV (local, D. melanogaster dm6)**.
+- Zoom to `chr4:540,000–560,000`.
+- Right-click any track → **Sashimi Plot** to inspect splice junctions.
 
-<!-- INSERT IMAGE: IGV GSM461180 treated at Pasilla locus -->
-![IGV Treated](images/04c_igv_GSM461180_PE_gene.png)
-> *Figure 7: IGV — GSM461180 (treated/PS-depleted, PE). Altered exon coverage relative to untreated condition.*
+![IGV Chromosome 4](images/2_igv_chr4.png)
+> *Figure 2: IGV view of chr4:540,000–560,000 showing read pileups across
+> genes zfh2, Thd1, CR43958, and Pur-alpha for both samples.*
 
----
+**IGV Sashimi Plot observations:**
+- Arched lines represent **splice junctions** with junction read counts
+  (e.g., 7, 14, 16, 20, 22, 34) confirming active splicing events.
+- High read coverage clusters align with annotated exons of **Thd1** and
+  neighboring genes on chr4.
+- Long-range junctions (e.g., junction 16) indicate **multi-exon skipping**
+  or distal splice events across the locus.
 
-### 6.3 Sashimi Plot
-
-Sashimi plots were generated directly within IGV to visualize
-**splice junction usage** at the *Pasilla* locus. Arc thickness is
-proportional to the number of reads spanning each junction, enabling
-direct comparison of differential splicing between conditions.
-
-<!-- INSERT IMAGE: Sashimi GSM461177 untreated -->
-![Sashimi Untreated](images/04d_sashimi_GSM461177.png)
-> *Figure 8: Sashimi — GSM461177 (untreated). Junction read counts annotated on each arc.*
-
-<!-- INSERT IMAGE: Sashimi GSM461180 treated -->
-![Sashimi Treated](images/04e_sashimi_GSM461180.png)
-> *Figure 9: Sashimi — GSM461180 (treated). Differential junction usage consistent with PS-mediated splicing regulation.*
+![Sashimi Plot](images/3_sashimi_chr4.png)
+> *Figure 3: Sashimi plot of RNA STAR output — splice junction arcs with
+> read support counts overlaid on the coverage track.*
 
 ---
 
-### 6.4 JBrowse2
+### 6.2 JBrowse2 — Galaxy-Integrated Visualization
 
-Both BAM alignment tracks and the dm6 gene annotation were loaded
-simultaneously in **JBrowse2**, providing an integrated interactive view
-of read coverage overlaid on gene structure at the *Pasilla* locus.
+**JBrowse2** `v3.6.5+galaxy1` was configured with BAM and GTF tracks
+for both samples.
 
-<!-- INSERT IMAGE: JBrowse2 both samples -->
-![JBrowse2](images/04f_jbrowse2_both_samples.png)
-> *Figure 10: JBrowse2 — both samples at PE gene coordinates with dm6 annotation track below coverage.*
+| Parameter                  | Value                                                      |
+|----------------------------|------------------------------------------------------------|
+| Action                     | New JBrowse Instance                                       |
+| Reference genome           | Fly (*D. melanogaster*): dm6 Full                          |
+| Default region             | `chr4:540000..560000`                                      |
+| BAM Track Data             | RNA STAR on collection N: mapped.bam                       |
+| Track Category (BAM)       | BAM Pileups                                                |
+| GFF Track Data             | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz`        |
+| Track Category (Genes)     | GFF/GFF3/BED Features                                      |
 
----
+![JBrowse2 Chromosome 4](images/4jbrowse2_chr4.png)
+> *Figure 4: JBrowse2 view of chr4:540,000–560,000 — BAM pileup tracks
+> for GSM461180_treat_paired and GSM461177_untreat_paired alongside the
+> GTF gene annotation.*
 
-### 6.5 STAR Strand-Specific Coverage
-
-BigWig coverage files produced by STAR represent strand-resolved read depth.
-Strand 1 (forward/sense) is rendered in **blue**; Strand 2 (reverse/antisense)
-in **red**. The predominance of signal on Strand 2 confirms the
-**reverse-stranded** library configuration.
-
-| Coverage Track  | Color    | Strand       |
-|-----------------|----------|--------------|
-| BigWig Strand 1 | 🔵 Blue  | Forward (+)  |
-| BigWig Strand 2 | 🔴 Red   | Reverse (−)  |
-
-<!-- INSERT IMAGE: STAR strand coverage blue and red in IGV/JBrowse2 -->
-![Strand Coverage](images/04g_star_strand_coverage_blue_red.png)
-> *Figure 11: Strand-specific coverage — Strand 1 (blue, forward) and Strand 2 (red, reverse). Signal on Strand 2 confirms reverse-stranded library.*
+**JBrowse2 observations:**
+- Both **treated** (GSM461180) and **untreated** (GSM461177) samples show
+  clear read pileups over annotated exons, confirming successful alignment.
+- Splice junction arcs are visible across both samples, consistent with
+  the expected multi-exon gene structures in the region.
+- Visible **coverage differences** between treated and untreated tracks
+  suggest differential expression — formally quantified in the next step.
 
 ---
 
