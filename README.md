@@ -427,8 +427,8 @@ gene counts via **MultiQC**, and computational inference using **Infer Experimen
 - Right-click track → **Color Alignments by → First-of-pair strand**.
 - Right-click → **Squished** for compact view.
 
-![IGV Strandness](images/05a_igv_strand.png)
-> *Figure 11: IGV view at chr3R:9,445,000–9,448,000 colored by first-of-pair
+![IGV Strandness](images/5_igv_strand.png)
+> *Figure 5: IGV view at chr3R:9,445,000–9,448,000 colored by first-of-pair
 > strand — coverage, junction, and read tracks shown for GSM461177.*
 
 **Key observations:**
@@ -447,8 +447,8 @@ gene counts via **MultiQC**, and computational inference using **Infer Experimen
 - Click **⋮** → **Pileup settings → Set feature height → Compact**.
 - Repeat for both BAM files.
 
-![JBrowse2 Strandness](images/05b_jbrowse2_strand.png)
-> *Figure 12: JBrowse2 view at chr3R:9,415,001–9,462,900 — both
+![JBrowse2 Strandness](images/6_jbrowse2_strand.png)
+> *Figure 6: JBrowse2 view at chr3R:9,415,001–9,462,900 — both
 > GSM461177_untreat_paired and GSM461180_treat_paired colored by
 > first-of-pair strand alongside the GTF annotation track.*
 
@@ -476,8 +476,8 @@ strand-specific bedgraph coverage for both samples simultaneously.
 - **Region plotted:** `chr4:540,000–560,000`
 - Plot title left empty so sample names appear as track labels.
 
-![pyGenomeTracks](images/05c_pygenometracks.png)
-> *Figure 13: pyGenomeTracks output — blue tracks (strand 1) and red tracks
+![pyGenomeTracks](images/7_pygenometracks.png)
+> *Figure 7: pyGenomeTracks output — blue tracks (strand 1) and red tracks
 > (strand 2) for GSM461177 and GSM461180, with gene annotation below.*
 
 **Key observations:**
