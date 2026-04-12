@@ -1076,7 +1076,7 @@ downregulation relative to untreated samples.*
 
 ---
 
-## 16. References
+## 15. References
 
 1. **Galaxy Training Network** (2016–2026, Revision 109) — Reference-based
    RNA-Seq data analysis tutorial.
