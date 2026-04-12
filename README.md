@@ -839,9 +839,9 @@ Use **heatmap2** `(v3.2.0+galaxy1)`:
 expressed genes. Hierarchical clustering separates treated from untreated samples,
 reflecting a consistent transcriptional response to Pasilla depletion.*
 
-> - 🔴 **Red intensity** reflects higher log₂-normalized expression; the single brightest row (deep red across all samples) represents the most highly expressed DE gene overall.
-> - **Two major gene clusters** emerge: the upper cluster shows uniformly high expression across all samples, while the lower cluster contains genes with notably lower expression — particularly in treated samples.
-> - **Treated vs. untreated samples cluster separately** on the column dendrogram, confirming that Pasilla depletion drives a consistent and reproducible transcriptional shift.
+> - **One dominant gene** stands out with the highest expression across all samples.
+> - **Upper cluster** = constitutively high; **lower cluster** = condition-dependent suppression.
+> - **Treated replicates branch together** before joining untreated — confirming replicate consistency.
 
 ---
 
@@ -853,11 +853,11 @@ reflecting a consistent transcriptional response to Pasilla depletion.*
 Red and blue indicate above- and below-average expression, respectively. Two distinct
 clusters reveal genes oppositely regulated by Pasilla depletion.*
 
-> - 🔵🔴 **Blue = below-average expression; Red = above-average expression** (relative to each gene's own mean across samples), making cross-sample patterns immediately visible.
-> -  **Two distinct gene groups** are revealed: genes **upregulated in treated** samples (red in treated / blue in untreated) and genes **downregulated in treated** samples (blue in treated / red in untreated) — a clear signature of Pasilla-regulated transcription.
-> - **Treated samples (GSM461179, 180, 181) cluster together**, and untreated samples (GSM461176, 177, 178, 182) form their own group — validating the biological separation between conditions.
+> - **Row normalization** allows fair comparison across low- and high-abundance genes.
+> - **Two clusters are near-mirror images** — a clean regulatory switch, not a graded response.
+> - **GSM461182** clusters firmly with untreated, confirming library type does not confound results.
 
-
+---
 
 ## 13. Gene Ontology Enrichment Analysis
 
