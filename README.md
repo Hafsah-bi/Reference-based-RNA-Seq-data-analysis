@@ -788,48 +788,6 @@ their direction of expression change.
 | Top KEGG pathway          | Spliceosome (dme03040, padj = 2.1e−09)             |
 | PCA PC1 variance          | ~55–65% (condition-driven separation)              |
 
----
-
-## 16. Repository Structure
-
-```
-📦 RNA-Seq-Galaxy-Report/
-├── 📄 README.md
-├── 🖼️ images/
-│   ├── 01_data_upload_history.png
-│   ├── 02_multiqc_report.png
-│   ├── 02b_per_base_quality.png
-│   ├── 03_star_mapping_log.png
-│   ├── 04a_multiqc_star_alignment.png
-│   ├── 04b_igv_GSM461177_PE_gene.png
-│   ├── 04c_igv_GSM461180_PE_gene.png
-│   ├── 04d_sashimi_GSM461177.png
-│   ├── 04e_sashimi_GSM461180.png
-│   ├── 04f_jbrowse2_both_samples.png
-│   ├── 04g_star_strand_coverage_blue_red.png
-│   ├── 05_infer_experiment_output.png
-│   ├── 06a_featurecounts_summary.png
-│   ├── 06b_count_matrix_preview.png
-│   ├── 07a_deseq2_dispersion.png
-│   ├── 07b_deseq2_MA_plot.png
-│   ├── 08_annotated_deseq2_table.png
-│   ├── 09_filtered_DE_genes.png
-│   ├── 09b_volcano_plot.png
-│   ├── 10a_PCA_plot.png
-│   ├── 10b_heatmap_sample_to_sample.png
-│   ├── 10c_heatmap_top_DE_genes.png
-│   ├── 11a_GO_enrichment_plot.png
-│   ├── 11b_GO_result_table.png
-│   ├── 12a_KEGG_enrichment_barplot.png
-│   └── 12b_KEGG_spliceosome_pathview.png
-├── 📂 data/
-│   └── counts_matrix_all7samples.tabular
-└── 📂 results/
-    ├── DESeq2_results_annotated.tabular
-    ├── DE_genes_significant.tabular
-    ├── GO_enrichment_results.tabular
-    └── KEGG_enrichment_results.tabular
-```
 
 ---
 
