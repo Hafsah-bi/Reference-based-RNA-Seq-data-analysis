@@ -269,8 +269,8 @@ Cutadapt per-adapter statistics reports.
 
 <!-- INSERT IMAGE: MultiQC aggregated Cutadapt report -->
 ![MultiQC Cutadapt](images/02d_multiqc_cutadapt.png)
-> *Figure 5: MultiQC Cutadapt summary — trimming statistics, read retention rates, and quality improvement across all samples.*
-
+> *Figure 3: MultiQC FastQC Status Checks heatmap across 4 samples
+> (GSM461177 forward/reverse, GSM461180 forward/reverse).*
 ---
 
 ### Quality Control Summary
