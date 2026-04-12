@@ -268,8 +268,8 @@ Cutadapt per-adapter statistics reports.
 | Output of Cutadapt         | Cutadapt on collection N: Report (Dataset collection)        |
 
 <!-- INSERT IMAGE: MultiQC aggregated Cutadapt report -->
-![MultiQC Cutadapt](images/02d_multiqc_cutadapt.png)
-> *Figure 3: MultiQC FastQC Status Checks heatmap across 4 samples
+![MultiQC Cutadapt](images/1_multiqc_cutadapt.png)
+> *Figure 1: MultiQC FastQC Status Checks heatmap across 4 samples
 > (GSM461177 forward/reverse, GSM461180 forward/reverse).*
 ---
 
