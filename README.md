@@ -2,9 +2,13 @@
 Reference-based RNA-Seq analysis of Drosophila melanogaster Pasilla gene knockdown  using Galaxy — QC, STAR mapping, featureCounts, DESeq2, GO &amp; KEGG enrichment analysis.
 
 > **Organism:** *Drosophila melanogaster*
-> **Study:** Pasilla gene knockdown 
+
+> **Study:** Pasilla gene knockdown
+
 > **Samples:** 4 untreated + 3 treated (PS-RNAi depleted)
+
 > **Platform:** [Galaxy](https://usegalaxy.org) | **Reference Genome:** dm6
+
 > **GEO Accession:** [GSE18508](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE18508)
 
 ---
