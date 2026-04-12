@@ -296,7 +296,7 @@ Cutadapt per-adapter statistics reports.
 | Output of Cutadapt         | Cutadapt on collection N: Report (Dataset collection)        |
 
 <!-- INSERT IMAGE: MultiQC aggregated Cutadapt report -->
-![MultiQC Cutadapt](images/1_multiqc_cutadapt.png)
+![MultiQC Cutadapt](images/1_multiqc_FastQC.png)
 > *Figure 1: MultiQC FastQC Status Checks heatmap across 4 samples
 > (GSM461177 forward/reverse, GSM461180 forward/reverse).*
 
@@ -424,7 +424,7 @@ for both samples.
 | GFF Track Data             | `Drosophila_melanogaster.BDGP6.32.109_UCSC.gtf.gz`        |
 | Track Category (Genes)     | GFF/GFF3/BED Features                                      |
 
-![JBrowse2 Chromosome 4](images/4jbrowse2_chr4.png)
+![JBrowse2 Chromosome 4](images/4_jb2_chr4.png)
 > *Figure 4: JBrowse2 view of chr4:540,000–560,000 — BAM pileup tracks
 > for GSM461180_treat_paired and GSM461177_untreat_paired alongside the
 > GTF gene annotation.*
@@ -728,17 +728,7 @@ full gene descriptions, and chromosomal positions using the Galaxy
 | DESeq2 result file  | DESeq2 output table                      |
 | Annotation database | *D. melanogaster* dm6 Ensembl            |
 | Gene ID column      | Column 1 (gene_id)                       |
-| Columns added       | Gene symbol, description, chromosome     |
-
-| gene_id      | gene_name | log2FC | p-value  | padj     | Description          |
-|--------------|-----------|--------|----------|----------|----------------------|
-| FBgn0025111  | ps        | −2.34  | 1.2e−15  | 3.4e−13  | pasilla, isoform A   |
-| FBgn0003360  | run       | +1.87  | 4.5e−10  | 8.9e−08  | runt                 |
-| FBgn0000256  | casp      | −1.65  | 2.1e−08  | 1.8e−06  | caspar               |
-
-<!-- INSERT IMAGE: Annotated DESeq2 result table -->
-![Annotated DESeq2](images/10_annotated_deseq2_table.png)
-> *Figure 10: Annotated DESeq2 results — gene symbols and functional descriptions appended to Ensembl IDs.*
+| Columns added       | Gene symbol, feature, chromosome     |
 
 ---
 
@@ -862,8 +852,8 @@ Use **heatmap2** `(v3.2.0+galaxy1)`:
 ####  Normalized Counts Heatmap (Log₂ scale)
 
 <!-- INSERT IMAGE: Normalized Counts Heatmap -->
-![Normalized Counts Heatmap](heatmap2_normalized_counts.png)
-> *Figure 11. Log₂(count+1)-transformed normalized counts for the 113 most differentially
+![Normalized Counts Heatmap](images/10_heatmap2_normalized_counts.png)
+> *Figure 10. Log₂(count+1)-transformed normalized counts for the 113 most differentially
 expressed genes. Hierarchical clustering separates treated from untreated samples,
 reflecting a consistent transcriptional response to Pasilla depletion.*
 
@@ -876,8 +866,8 @@ reflecting a consistent transcriptional response to Pasilla depletion.*
 #### Z-score Heatmap (Row-normalized)
 
 <!-- INSERT IMAGE: Z-score Heatmap -->
-![Z-score Heatmap](z-score-heatmap.png)
-> *Figure 12. Row-wise Z-score heatmap of the 113 most differentially expressed genes.
+![Z-score Heatmap](images/11_z-score-heatmap.png)
+> *Figure 11. Row-wise Z-score heatmap of the 113 most differentially expressed genes.
 Red and blue indicate above- and below-average expression, respectively. Two distinct
 clusters reveal genes oppositely regulated by Pasilla depletion.*
 
@@ -965,12 +955,12 @@ The primary output table contains the following columns per GO term:
 
 ---
 
-#### Figure 13 — Top Over-Represented GO Categories
+#### Figure 12 — Top Over-Represented GO Categories
 
 <!-- INSERT IMAGE: Top over-represented categories -->
-![Top over-represented categories in CC, BP, MF](Top_over-represented_categories.png)
+![Top over-represented categories in CC, BP, MF](images/12_Top_over-represented_categories.png)
 
-> *Figure 13. Top over-represented Gene Ontology categories across Cellular Component (CC),
+> *Figure 12. Top over-represented Gene Ontology categories across Cellular Component (CC),
 Biological Process (BP), and Molecular Function (MF), identified by goseq using the
 Wallenius method. Bar length represents the percentage of differentially expressed genes
 in each category; point size reflects total gene count, and colour indicates the
@@ -1055,11 +1045,11 @@ per KEGG pathway.
 
 ---
 
-#### Figure 14 — Glycolysis / Gluconeogenesis Pathway 
+#### Figure 13 — Glycolysis / Gluconeogenesis Pathway 
 
-![Glycolysis / Gluconeogenesis](images/14_glyconeogenesis.png)
+![Glycolysis / Gluconeogenesis](images/13_glyconeogenesis.png)
 
->*Figure 14. Pathview visualization of the Glycolysis / Gluconeogenesis pathway
+>*Figure 13. Pathview visualization of the Glycolysis / Gluconeogenesis pathway
 (dme00010) in* Drosophila melanogaster. *Coloured boxes represent differentially
 expressed genes overlaid with log₂ fold change values; red indicates
 upregulation and green indicates downregulation upon Pasilla depletion.*
@@ -1073,11 +1063,11 @@ upregulation and green indicates downregulation upon Pasilla depletion.*
 
 ---
 
-#### Figure 15 — Spliceosome Pathway 
+#### Figure 14 — Spliceosome Pathway 
 
-![Spliceosome](images/15_spliceosome.png)
+![Spliceosome](images/14_spliceosome.png)
 
->*Figure 15. Pathview visualization of the Spliceosome pathway (dme03040) in*
+>*Figure 14. Pathview visualization of the Spliceosome pathway (dme03040) in*
 Drosophila melanogaster. *Coloured nodes highlight differentially expressed
 spliceosomal components, with red indicating upregulation and green indicating
 downregulation relative to untreated samples.*
