@@ -1,0 +1,3 @@
+Sample	star-total_reads	star-mapped	star-mapped_percent	star-uniquely_mapped	star-uniquely_mapped_percent	star-multimapped
+GSM461177_subsampled	1.0426549999999999	0.888076	85.17	0.8631099999999999	82.78	0.024966
+GSM461180_subsampled	1.116426	0.9059999999999999	81.15	0.874933	78.37	0.031066999999999997
